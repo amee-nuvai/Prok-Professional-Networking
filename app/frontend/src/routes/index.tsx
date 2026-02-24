@@ -39,6 +39,10 @@ export const router = createBrowserRouter([
     element: <PostList />,
   },
   {
+    path: '/feed',   // ✅ ADDED THIS
+    element: <Feed />,
+  },
+  {
     path: '/jobs',
     element: <JobList />,
   },
@@ -46,4 +50,8 @@ export const router = createBrowserRouter([
     path: '/messages',
     element: <MessageList />,
   },
-]); 
+  {
+    path: '*',   // ✅ optional but recommended
+    element: <h1>404 - Page Not Found</h1>,
+  },
+]);

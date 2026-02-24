@@ -25,7 +25,7 @@ export const authApi = {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        username: userData.name,
+        name: userData.name,
         email: userData.email,
         password: userData.password
       }),
