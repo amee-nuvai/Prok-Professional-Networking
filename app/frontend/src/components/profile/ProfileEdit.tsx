@@ -52,7 +52,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   const { getRootProps, getInputProps, isDragActive, fileRejections } = useDropzone({
     onDrop,
     accept: { 'image/*': ['.jpg', '.jpeg', '.png', '.gif', '.webp'] },
-    maxSize: 5 * 1024 * 1024, // 5 MB
+    maxSize: 5 * 1024 * 1024,
     maxFiles: 1,
     disabled: uploading,
   });
@@ -142,7 +142,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   );
 };
 
-// ─── Form Field ────────────────────────────────────────────────────────────────
+// ─── Reusable Form Field ───────────────────────────────────────────────────────
 
 interface FieldProps {
   label: string;
@@ -223,7 +223,9 @@ const FormField: React.FC<FieldProps> = ({
           <span />
         )}
         {maxLength && (
-          <span className={`text-xs ${value.length > maxLength * 0.9 ? 'text-amber-500' : 'text-gray-400'}`}>
+          <span
+            className={`text-xs ${value.length > maxLength * 0.9 ? 'text-amber-500' : 'text-gray-400'}`}
+          >
             {value.length}/{maxLength}
           </span>
         )}
@@ -514,7 +516,7 @@ const FormSection: React.FC<FormSectionProps> = ({ title, icon, children }) => (
 
 type SubmitStatus = 'idle' | 'submitting' | 'success' | 'error';
 
-// ─── Main ProfileEdit ──────────────────────────────────────────────────────────
+// ─── Form Data Helpers ─────────────────────────────────────────────────────────
 
 const profileToFormData = (profile: Profile): ProfileFormData => ({
   name: profile.name,
@@ -535,6 +537,8 @@ const profileToFormData = (profile: Profile): ProfileFormData => ({
 
 const SIMPLE_FIELDS = ['name', 'username', 'email', 'title', 'location', 'bio', 'phone', 'website'] as const;
 
+// ─── Main ProfileEdit ──────────────────────────────────────────────────────────
+
 const ProfileEdit: React.FC = () => {
   const navigate = useNavigate();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -552,7 +556,8 @@ const ProfileEdit: React.FC = () => {
   const [pendingAvatarFile, setPendingAvatarFile] = useState<File | null>(null);
 
   useEffect(() => {
-    profileApi.getProfile()
+    profileApi
+      .getProfile()
       .then((data) => {
         setProfile(data);
         setFormData(profileToFormData(data));
@@ -561,11 +566,11 @@ const ProfileEdit: React.FC = () => {
       .finally(() => setLoading(false));
   }, []);
 
-  // ── Field handlers ──────────────────────────────────────────────────────────
+  // ── Field handlers ───────────────────────────────────────────────────────────
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setFormData((prev) => prev ? { ...prev, [name]: value } : prev);
+    setFormData((prev) => (prev ? { ...prev, [name]: value } : prev));
     if (touched[name] && name in mockFormValidationRules) {
       setErrors((prev) => ({
         ...prev,
@@ -585,13 +590,13 @@ const ProfileEdit: React.FC = () => {
     }
   };
 
-  // ── Skills ──────────────────────────────────────────────────────────────────
+  // ── Skills ───────────────────────────────────────────────────────────────────
 
   const handleSkillsChange = (skills: string[]) => {
-    setFormData((prev) => prev ? { ...prev, skills } : prev);
+    setFormData((prev) => (prev ? { ...prev, skills } : prev));
   };
 
-  // ── Experience ──────────────────────────────────────────────────────────────
+  // ── Experience ───────────────────────────────────────────────────────────────
 
   const updateExperience = (index: number, field: keyof ExpEntry, value: string | boolean) => {
     setFormData((prev) => {
@@ -622,7 +627,7 @@ const ProfileEdit: React.FC = () => {
     });
   };
 
-  // ── Education ───────────────────────────────────────────────────────────────
+  // ── Education ────────────────────────────────────────────────────────────────
 
   const updateEducation = (index: number, field: keyof EduEntry, value: string) => {
     setFormData((prev) => {
@@ -653,7 +658,7 @@ const ProfileEdit: React.FC = () => {
     });
   };
 
-  // ── Image upload ────────────────────────────────────────────────────────────
+  // ── Image upload ─────────────────────────────────────────────────────────────
 
   const handleAvatarUpload = (file: File) => {
     const objectUrl = URL.createObjectURL(file);
@@ -662,7 +667,6 @@ const ProfileEdit: React.FC = () => {
     setUploading(true);
     setUploadProgress(0);
 
-    // Simulate upload progress
     let progress = 0;
     const interval = setInterval(() => {
       progress += 10;
@@ -674,7 +678,7 @@ const ProfileEdit: React.FC = () => {
     }, 150);
   };
 
-  // ── Validation ──────────────────────────────────────────────────────────────
+  // ── Validation ───────────────────────────────────────────────────────────────
 
   const validateAll = (): boolean => {
     if (!formData) return false;
@@ -694,7 +698,7 @@ const ProfileEdit: React.FC = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // ── Submit ──────────────────────────────────────────────────────────────────
+  // ── Submit ────────────────────────────────────────────────────────────────────
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -711,7 +715,6 @@ const ProfileEdit: React.FC = () => {
     try {
       let avatarUrl = profile.avatar_url;
 
-      // Upload avatar if pending
       if (pendingAvatarFile) {
         const result = await profileApi.uploadAvatar(pendingAvatarFile);
         avatarUrl = result.avatar_url;
@@ -720,8 +723,14 @@ const ProfileEdit: React.FC = () => {
       await profileApi.updateProfile({
         ...formData,
         avatar_url: avatarUrl,
-        experience: formData.experience.map((exp, i) => ({ ...exp, id: profile.experience[i]?.id ?? i + 1 })),
-        education: formData.education.map((edu, i) => ({ ...edu, id: profile.education[i]?.id ?? i + 1 })),
+        experience: formData.experience.map((exp, i) => ({
+          ...exp,
+          id: profile.experience[i]?.id ?? i + 1,
+        })),
+        education: formData.education.map((edu, i) => ({
+          ...edu,
+          id: profile.education[i]?.id ?? i + 1,
+        })),
       });
 
       setSubmitStatus('success');
@@ -764,7 +773,7 @@ const ProfileEdit: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-3xl mx-auto px-4 py-6">
-        {/* Header */}
+        {/* Page header */}
         <div className="flex items-center gap-3 mb-6">
           <button
             type="button"
@@ -804,8 +813,7 @@ const ProfileEdit: React.FC = () => {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
-
-          {/* Photo */}
+          {/* Profile Photo */}
           <FormSection title="Profile Photo" icon="📷">
             <ImageUpload
               currentAvatar={profile.avatar_url}
@@ -816,7 +824,7 @@ const ProfileEdit: React.FC = () => {
             />
           </FormSection>
 
-          {/* Basic Info */}
+          {/* Basic Information */}
           <FormSection title="Basic Information" icon="👤">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <FormField

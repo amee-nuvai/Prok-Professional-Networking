@@ -10,6 +10,7 @@ import JobList from '../components/job-board/JobList';
 import MessageList from '../components/messaging/MessageList';
 import Navbar from '../components/navigation/Navbar';
 
+// Layout wrapper that renders Navbar above all authenticated pages
 const AppLayout = () => (
   <>
     <Navbar />
@@ -18,6 +19,7 @@ const AppLayout = () => (
 );
 
 export const router = createBrowserRouter([
+  // Public routes (no Navbar)
   {
     path: '/',
     element: <Login />,
@@ -30,6 +32,7 @@ export const router = createBrowserRouter([
     path: '/signup',
     element: <Signup />,
   },
+  // Authenticated routes (with Navbar)
   {
     element: <AppLayout />,
     children: [

@@ -13,7 +13,7 @@ interface ProfileHeaderProps {
 const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => (
   <div className="bg-white rounded-xl shadow-sm overflow-hidden">
     {/* Cover photo */}
-    <div className="h-32 sm:h-48 bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-700 relative">
+    <div className="h-32 sm:h-48 bg-gradient-to-r from-blue-500 via-indigo-600 to-purple-600 relative">
       <div
         className="absolute inset-0 opacity-20"
         style={{
@@ -24,7 +24,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => (
     </div>
 
     <div className="px-4 sm:px-6 pb-6">
-      {/* Avatar + name */}
+      {/* Avatar + name row */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between -mt-12 sm:-mt-16">
         <div className="flex items-end space-x-4">
           <div className="relative">
@@ -43,9 +43,12 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => (
             {profile.title && (
               <p className="text-sm sm:text-base text-gray-600">{profile.title}</p>
             )}
+            {profile.username && (
+              <p className="text-xs text-gray-400">@{profile.username}</p>
+            )}
           </div>
         </div>
-        <div className="mt-4 sm:mt-0 flex space-x-2">
+        <div className="mt-4 sm:mt-0">
           <Link
             to="/profile/edit"
             className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
@@ -101,7 +104,7 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => (
           </span>
         )}
         {profile.mutual_connections !== undefined && profile.mutual_connections > 0 && (
-          <span className="text-blue-600">
+          <span className="text-blue-600 font-medium">
             {profile.mutual_connections} mutual connections
           </span>
         )}
@@ -167,6 +170,27 @@ const ProfileHeader: React.FC<ProfileHeaderProps> = ({ profile }) => (
           </a>
         )}
       </div>
+    </div>
+  </div>
+);
+
+// ─── Stats Bar ─────────────────────────────────────────────────────────────────
+
+const StatsBar: React.FC<{ profile: Profile }> = ({ profile }) => (
+  <div className="bg-white rounded-xl shadow-sm p-4">
+    <div className="grid grid-cols-3 divide-x divide-gray-100">
+      {[
+        { label: 'Connections', value: profile.connections_count ?? 0 },
+        { label: 'Posts', value: profile.posts_count ?? 0 },
+        { label: 'Skills', value: profile.skills.length },
+      ].map((stat) => (
+        <div key={stat.label} className="text-center px-2">
+          <div className="text-lg font-bold text-blue-600">
+            {stat.value.toLocaleString()}
+          </div>
+          <div className="text-xs text-gray-500 mt-0.5">{stat.label}</div>
+        </div>
+      ))}
     </div>
   </div>
 );
@@ -248,7 +272,7 @@ const ExperienceSection: React.FC<{ experience: Profile['experience'] }> = ({ ex
           key={exp.id}
           className={`flex gap-4 ${idx < experience.length - 1 ? 'pb-5 border-b border-gray-100' : ''}`}
         >
-          <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0 text-lg">
+          <div className="w-10 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0 text-lg">
             🏢
           </div>
           <div className="flex-1 min-w-0">
@@ -280,7 +304,7 @@ const EducationSection: React.FC<{ education: Profile['education'] }> = ({ educa
           key={edu.id}
           className={`flex gap-4 ${idx < education.length - 1 ? 'pb-5 border-b border-gray-100' : ''}`}
         >
-          <div className="w-10 h-10 rounded-lg bg-gray-100 flex items-center justify-center flex-shrink-0 text-lg">
+          <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center flex-shrink-0 text-lg">
             🏛️
           </div>
           <div className="flex-1 min-w-0">
@@ -354,12 +378,7 @@ interface ActivityFeedProps {
   onLoadMore: () => void;
 }
 
-const ActivityFeed: React.FC<ActivityFeedProps> = ({
-  activity,
-  loading,
-  hasMore,
-  onLoadMore,
-}) => (
+const ActivityFeed: React.FC<ActivityFeedProps> = ({ activity, loading, hasMore, onLoadMore }) => (
   <CollapsibleSection title="Recent Activity" icon={<span>🕐</span>}>
     <div className="space-y-4 pt-1">
       {activity.map((post) => (
@@ -368,18 +387,15 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
           className="flex gap-3 pb-4 border-b border-gray-100 last:border-0 last:pb-0"
         >
           <img
-            src={
-              post.author_avatar ||
-              'https://api.dicebear.com/7.x/avataaars/svg?seed=user'
-            }
+            src={post.author_avatar || 'https://api.dicebear.com/7.x/avataaars/svg?seed=user'}
             alt={post.author_name}
-            className="w-9 h-9 rounded-full flex-shrink-0"
+            className="w-9 h-9 rounded-full flex-shrink-0 object-cover"
           />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-medium text-sm text-gray-900">{post.author_name}</span>
               {post.type && post.type !== 'post' && (
-                <span className="text-xs px-2 py-0.5 bg-gray-100 text-gray-600 rounded-full capitalize">
+                <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full capitalize">
                   {post.type}
                 </span>
               )}
@@ -397,14 +413,9 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
               </span>
               <span className="flex items-center gap-1">
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
-                {post.comments.length} comments
+                {post.comments.length}
               </span>
             </div>
           </div>
@@ -421,19 +432,8 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
           {loading ? (
             <span className="flex items-center gap-2">
               <svg className="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                />
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
               Loading...
             </span>
@@ -446,27 +446,6 @@ const ActivityFeed: React.FC<ActivityFeedProps> = ({
   </CollapsibleSection>
 );
 
-// ─── Stats Bar ─────────────────────────────────────────────────────────────────
-
-const StatsBar: React.FC<{ profile: Profile }> = ({ profile }) => (
-  <div className="bg-white rounded-xl shadow-sm p-4">
-    <div className="grid grid-cols-3 divide-x divide-gray-100">
-      {[
-        { label: 'Connections', value: profile.connections_count ?? 0 },
-        { label: 'Posts', value: profile.posts_count ?? 0 },
-        { label: 'Skills', value: profile.skills.length },
-      ].map((stat) => (
-        <div key={stat.label} className="text-center px-2">
-          <div className="text-lg font-bold text-blue-600">
-            {stat.value.toLocaleString()}
-          </div>
-          <div className="text-xs text-gray-500 mt-0.5">{stat.label}</div>
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
 // ─── Loading Skeleton ──────────────────────────────────────────────────────────
 
 const ProfileSkeleton: React.FC = () => (
@@ -475,7 +454,7 @@ const ProfileSkeleton: React.FC = () => (
       <div className="h-32 sm:h-48 bg-gray-200" />
       <div className="px-6 pb-6">
         <div className="flex items-end space-x-4 -mt-12">
-          <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gray-200 border-4 border-white" />
+          <div className="w-24 h-24 sm:w-32 sm:h-32 rounded-full bg-gray-300 border-4 border-white" />
           <div className="pb-2 space-y-2">
             <div className="h-6 w-40 bg-gray-200 rounded" />
             <div className="h-4 w-28 bg-gray-100 rounded" />

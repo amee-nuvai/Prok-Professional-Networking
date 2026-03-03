@@ -38,7 +38,8 @@ export const mockProfile: Profile = {
       start_date: '2021-03',
       end_date: null,
       current: true,
-      description: 'Led development of microservices architecture serving 10M+ users. Mentored a team of 5 junior engineers. Reduced API response time by 40% through caching optimizations.',
+      description:
+        'Led development of microservices architecture serving 10M+ users. Mentored a team of 5 junior engineers. Reduced API response time by 40% through caching optimizations.',
     },
     {
       id: 2,
@@ -48,7 +49,8 @@ export const mockProfile: Profile = {
       start_date: '2018-06',
       end_date: '2021-02',
       current: false,
-      description: 'Built and maintained React frontend applications. Collaborated with design team to implement pixel-perfect UI components. Developed RESTful APIs using Node.js and Express.',
+      description:
+        'Built and maintained React frontend applications. Collaborated with design team to implement pixel-perfect UI components. Developed RESTful APIs using Node.js and Express.',
     },
     {
       id: 3,
@@ -58,7 +60,8 @@ export const mockProfile: Profile = {
       start_date: '2016-07',
       end_date: '2018-05',
       current: false,
-      description: 'Developed client websites using HTML, CSS, JavaScript and PHP. Managed 15+ client projects simultaneously. Introduced automated testing which reduced bugs by 30%.',
+      description:
+        'Developed client websites using HTML, CSS, JavaScript and PHP. Managed 15+ client projects simultaneously. Introduced automated testing which reduced bugs by 30%.',
     },
   ],
   education: [
@@ -69,7 +72,7 @@ export const mockProfile: Profile = {
       field: 'Computer Science',
       start_date: '2012-09',
       end_date: '2016-05',
-      description: 'GPA: 3.8/4.0. Dean\'s List. President of ACM Student Chapter.',
+      description: "GPA: 3.8/4.0. Dean's List. President of ACM Student Chapter.",
     },
     {
       id: 2,
@@ -78,7 +81,7 @@ export const mockProfile: Profile = {
       field: 'Machine Learning',
       start_date: '2020-01',
       end_date: '2020-06',
-      description: 'Completed Andrew Ng\'s Machine Learning Specialization with distinction.',
+      description: "Completed Andrew Ng's Machine Learning Specialization with distinction.",
     },
   ],
   connections_count: 847,
@@ -92,7 +95,8 @@ export const mockActivity: Post[] = [
     user_id: 1,
     author_name: 'Alex Morgan',
     author_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=alex_morgan',
-    content: 'Excited to share that our team just shipped a major performance improvement that reduced load times by 60%! Proud of what we accomplished together. #engineering #performance',
+    content:
+      'Excited to share that our team just shipped a major performance improvement that reduced load times by 60%! Proud of what we accomplished together. #engineering #performance',
     created_at: '2024-03-15T14:30:00Z',
     likes: 124,
     comments: [],
@@ -103,7 +107,8 @@ export const mockActivity: Post[] = [
     user_id: 1,
     author_name: 'Alex Morgan',
     author_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=alex_morgan',
-    content: 'Just published a new article on "Building Resilient Microservices with Node.js". Check it out! The key insight: design for failure from day one. #nodejs #microservices #engineering',
+    content:
+      'Just published a new article on "Building Resilient Microservices with Node.js". Check it out! The key insight: design for failure from day one. #nodejs #microservices #engineering',
     created_at: '2024-03-10T09:15:00Z',
     likes: 89,
     comments: [],
@@ -114,7 +119,8 @@ export const mockActivity: Post[] = [
     user_id: 1,
     author_name: 'Alex Morgan',
     author_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=alex_morgan',
-    content: 'Attended AWS re:Invent 2024 last week. Key takeaways: serverless is maturing fast, AI/ML integration is getting easier, and the community is stronger than ever. Happy to share notes with anyone interested!',
+    content:
+      'Attended AWS re:Invent 2024 last week. Key takeaways: serverless is maturing fast, AI/ML integration is getting easier, and the community is stronger than ever. Happy to share notes with anyone interested!',
     created_at: '2024-03-05T16:45:00Z',
     likes: 67,
     comments: [],
@@ -125,13 +131,40 @@ export const mockActivity: Post[] = [
     user_id: 1,
     author_name: 'Alex Morgan',
     author_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=alex_morgan',
-    content: 'Completed a 30-day coding challenge focused on system design problems. It\'s amazing how much you can improve with consistent daily practice. Highly recommend it to anyone looking to level up! #100DaysOfCode',
+    content:
+      "Completed a 30-day coding challenge focused on system design problems. It's amazing how much you can improve with consistent daily practice. Highly recommend it to anyone looking to level up! #100DaysOfCode",
     created_at: '2024-02-28T11:00:00Z',
     likes: 203,
     comments: [],
     type: 'post',
   },
+  {
+    id: 5,
+    user_id: 1,
+    author_name: 'Alex Morgan',
+    author_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=alex_morgan',
+    content:
+      'Open source contribution milestone: just hit 500 GitHub stars on my React component library! Thank you to everyone who has used it, filed issues, and contributed PRs. The community makes open source worth it.',
+    created_at: '2024-02-20T08:30:00Z',
+    likes: 312,
+    comments: [],
+    type: 'post',
+  },
+  {
+    id: 6,
+    user_id: 1,
+    author_name: 'Alex Morgan',
+    author_avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=alex_morgan',
+    content:
+      'Gave my first tech talk today at the Bay Area React Meetup on "Advanced Patterns in TypeScript". Incredibly nervous beforehand but the audience was so warm and encouraging. Already planning the next one!',
+    created_at: '2024-02-10T19:00:00Z',
+    likes: 178,
+    comments: [],
+    type: 'activity',
+  },
 ];
+
+// ─── Mock Form Validation Rules ───────────────────────────────────────────────
 
 export const mockFormValidationRules = {
   name: {
@@ -197,6 +230,8 @@ export const mockFormValidationRules = {
     },
   },
 };
+
+// ─── Mock API Responses ───────────────────────────────────────────────────────
 
 export const simulateApiDelay = (ms = 800) =>
   new Promise((resolve) => setTimeout(resolve, ms));
