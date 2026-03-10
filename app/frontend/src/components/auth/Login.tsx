@@ -25,14 +25,18 @@ const Login: React.FC = () => {
       
       // Store token and user data
       if (data.token && data.user) {
-        login(data.token, {
-          id: data.user.id,
-          username: data.user.username,
-          email: data.user.email,
-          name: data.user.username
-        });
-        navigate('/feed', { replace: true });
-      } else {
+  login(
+    {
+      id: data.user.id,
+      username: data.user.username,
+      email: data.user.email,
+      name: data.user.username
+    },
+    data.token
+  );
+
+  navigate('/feed', { replace: true });
+} else {
         setError('Invalid response from server');
       }
     } catch (err) {

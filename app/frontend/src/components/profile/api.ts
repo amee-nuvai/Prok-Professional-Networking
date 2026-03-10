@@ -1,39 +1,48 @@
-import { mockApiResponses } from '../../data/mockData';
 import type { Profile } from '../../types';
 
-const API_URL = 'http://localhost:5000';
+const API_URL = 'http://localhost:5000/api';
 
+const token = "PASTE_VALID_JWT_HERE"; // hardcode a valid JWT for a real user
+
+  // GET PROFILE FROM BACKEND
+  // api.ts (example)
 export const profileApi = {
-  // ── Mock API (Day 3) — swap for real API in Day 4 ─────────────────────────
-  getProfile: async (): Promise<Profile> => {
-    return mockApiResponses.getProfile();
-  },
+  getProfile: async () => {
+    const token = localStorage.getItem('token');
+    if (!token) throw new Error('No auth token found');
 
-  updateProfile: async (profileData: Partial<Profile>): Promise<Profile> => {
-    return mockApiResponses.updateProfile(profileData);
-  },
-
-  uploadAvatar: async (file: File): Promise<{ avatar_url: string }> => {
-    return mockApiResponses.uploadAvatar(file);
-  },
-
-  // ── Real API calls (Day 4 backend integration) ────────────────────────────
-  _getProfileReal: async () => {
-    const response = await fetch(`${API_URL}/api/profile`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
+    const res = await fetch(`${API_URL}/profile`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
     });
-    return response.json();
+
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Failed to fetch profile');
+    }
+
+    return res.json();
   },
 
-  _updateProfileReal: async (profileData: Partial<Profile>) => {
-    const response = await fetch(`${API_URL}/api/profile`, {
+  updateProfile: async (profileData: Partial<Profile>) => {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${API_URL}/profile`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(profileData),
     });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.error || 'Failed to update profile');
+    }
+
     return response.json();
   },
 };
